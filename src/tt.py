@@ -1,6 +1,11 @@
 import os
+import re
+import time
+
 import telebot
 import emoji
+from bs4 import BeautifulSoup
+
 import config
 import requests
 from lxml import etree
@@ -15,13 +20,14 @@ movieurl = "https://ent.sina.com.cn/movie/top10bang/"
 res = requests.get(url=movieurl, headers=headers).content
 selector = etree.HTML(res)
 
-odyssey_id = config.CHAT_ID
+chat_id = config.CHAT_ID
 TOKEN = os.environ.get('TOKEN') or config.TGBOT_TOKEN
 bot = telebot.TeleBot(TOKEN)
 logger = config.setup_log()
 
 photo_china = open("Mainland.PNG", "rb")
 photo_usa = open("NorthAmerica.PNG", "rb")
+photo_rg = open("rg.png", "rb")
 
 baomihua = emoji.emojize(':popcorn:')
 one = "1️⃣"
@@ -34,6 +40,9 @@ seven = '7️⃣'
 eight = '8️⃣'
 nine = '9️⃣'
 ten = '🔟'
+up = '📈 '
+movie1 = '🎬 '
+movie2 = '📺'
 
 
 @bot.message_handler(commands=['list_China'])
@@ -55,7 +64,7 @@ def send_photo1(message):
 
     for index in range(len(name_China)):
         name_China[index] = " " + name_China[index]
-    msg = bot.send_photo(chat_id=odyssey_id, photo=photo_china, parse_mode='MARKDOWN',
+    msg = bot.send_photo(chat_id=chat_id, photo=photo_china, parse_mode='MARKDOWN',
                          caption=["#TopBoxOffice #Mainland #票房\n"
                                   "\n"
                                   + baomihua + " *内地票房周榜*（" + date_China1 + '月' + date_China2 + "日 | 人民币)\n"
@@ -112,7 +121,7 @@ def send_photo1(message):
                                                                          "\n"
                                                                          "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
     bot.send_message(message.chat.id, "中国电影票房榜单已推送到Odyssey频道")
-    bot.delete_message(odyssey_id, msg.message_id + 1)
+    bot.delete_message(chat_id, msg.message_id + 1)
 
 
 @bot.message_handler(commands=['list_USA'])
@@ -144,7 +153,7 @@ def send_photo1(message):
     for index in range(len(name_USA)):
         name_USA[index] = " " + name_USA[index]
 
-    msg = bot.send_photo(chat_id=odyssey_id, photo=photo_usa, parse_mode='MARKDOWN',
+    msg = bot.send_photo(chat_id=chat_id, photo=photo_usa, parse_mode='MARKDOWN',
                          caption=["#TopBoxOffice #NorthAmerica #票房\n"
                                   "\n"
                                   + baomihua + " *北美票房周榜*（" + date_USA1 + "月" + date_USA2 + "日 | 美元)\n"
@@ -193,7 +202,54 @@ def send_photo1(message):
                                                                         "\n"
                                                                         "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
     bot.send_message(message.chat.id, "美国电影票房榜单已推送到Odyssey频道")
-    bot.delete_message(odyssey_id, msg.message_id + 1)
+    bot.delete_message(chat_id, msg.message_id + 1)
+
+
+@bot.message_handler(commands=['list_Streaming'])
+def send_rglist(message):
+    listurl1 = "https://reelgood.com/movies/browse/popular-movies"
+    page = requests.get(listurl1)
+    soup = BeautifulSoup(page.content, "html.parser")
+    list1 = soup.find_all("a", href=re.compile(r'/movie/'))
+    movie_list = []
+    for link in list1:
+        movie_list.append(link.text)
+    movie_list = [i for i in movie_list if i != '']
+
+    print(movie_list)
+
+    listurl2 = "https://reelgood.com/tv/curated/trending-picks"
+    page = requests.get(listurl2)
+    soup = BeautifulSoup(page.content, "html.parser")
+    list2 = soup.find_all("a", href=re.compile(r'/show/'))
+    show_list = []
+    for link in list2:
+        show_list.append(link.text)
+    show_list = [i for i in show_list if i != '']
+
+    print(show_list)
+
+    msg = bot.send_photo(chat_id=chat_id, photo=photo_rg, parse_mode='MARKDOWN',
+                         caption=["#TrendingNow #Streaming\n" + "\n" +
+                                  up + "*流媒体热度排行*（" + time.strftime("%m", time.localtime()) + "月" + time.strftime(
+                             "%d", time.localtime()) + "日)" + "\n" + "\n" +
+                                  movie1 + "*电影 Movies*\n" + "\n" +
+                                  one + " " + movie_list[0] + "\n" + "\n" +
+                                  two + " " + movie_list[1] + "\n" + "\n" +
+                                  thr + " " + movie_list[2] + "\n" + "\n" +
+                                  four + " " + movie_list[3] + "\n" + "\n" +
+                                  five + " " + movie_list[4] + "\n" + "\n" +
+                                  six + " " + movie_list[5] + "\n" + "\n" +
+                                  movie2 + " *剧集 TV Shows*\n" + "\n" +
+                                  one + " " + show_list[0] + "\n" + "\n" +
+                                  two + " " + show_list[1] + "\n" + "\n" +
+                                  thr + " " + show_list[2] + "\n" + "\n" +
+                                  four + " " + show_list[3] + "\n" + "\n" +
+                                  five + " " + show_list[4] + "\n" + "\n" +
+                                  six + " " + show_list[5] + "\n" + "\n" +
+                                  "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
+    bot.send_message(message.chat.id, "流媒体热度排行已推送到Odyssey频道")
+    bot.delete_message(chat_id, msg.message_id + 1)
 
 
 if __name__ == '__main__':

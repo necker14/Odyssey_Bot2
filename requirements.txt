@@ -1,3 +1,5 @@
+APScheduler==3.7.0
+beautifulsoup4==4.9.3
 certifi==2020.6.20
 cffi==1.14.1
 chardet==3.0.4
@@ -9,6 +11,9 @@ pycparser==2.20
 pycryptodomex==3.9.4
 pyOpenSSL==19.1.0
 pyTelegramBotAPI==3.7.2
+pytz==2021.1
 requests==2.24.0
 six==1.15.0
+soupsieve==2.2.1
+tzlocal==2.1
 urllib3==1.25.10
