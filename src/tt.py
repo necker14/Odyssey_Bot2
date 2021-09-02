@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import time
@@ -211,42 +212,154 @@ def send_rglist(message):
     page = requests.get(listurl1)
     soup = BeautifulSoup(page.content, "html.parser")
     list1 = soup.find_all("a", href=re.compile(r'/movie/'))
-    movie_list = []
+    movie_list_en = []
     for link in list1:
-        movie_list.append(link.text)
-    movie_list = [i for i in movie_list if i != '']
+        movie_list_en.append(link.text)
+    movie_list_en = [i for i in movie_list_en if i != '']
+    print(movie_list_en)
 
-    print(movie_list)
+    movie_list_en1 = []
+    for i in movie_list_en:
+        movie_list_en1.append(i.replace(' ', ''))
+    print(movie_list_en1)
+
+    movie_list_zh = []
+    movie_list_zh1 = []
+    movie_list_value = []
+    movie_list_value1 = []
+    movie_list_url = []
+    movie_list_url1 = []
+
+    movie_list_en1 = movie_list_en1[:6]
+
+    for movie in movie_list_en1:
+        url = "https://search.keepfrds.workers.dev/?search=" + movie
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 UBrowser/6.2.3964.2 Safari/537.36",
+        }
+        response = requests.get(url)
+        json_response = response.content.decode()
+        dict_json = json.loads(json_response)
+
+        for mk in dict_json["payload"]["items"]:
+            try:
+                list = mk["title"].split(' ', 1)
+                if u'\u4e00' <= list[0] <= u'\u9fa5':
+                    movie_list_zh1.append(list[0])
+                    movie_list_value1.append(str(mk["rating"]["value"]))
+                    movie_list_url1.append(mk["url"])
+            except KeyError:
+                pass
+        try:
+            movie_list_zh.append(movie_list_zh1[0])
+            if movie_list_value1[0] == "0":
+                movie_list_value.append("N/A")
+            else:
+                movie_list_value.append(movie_list_value1[0])
+            movie_list_url.append(movie_list_url1[0])
+        except:
+            movie_list_zh.append(movie)
+            movie_list_value.append("N/A")
+            movie_list_url.append("")
+        movie_list_zh1 = []
+        movie_list_value1 = []
+        movie_list_url1 = []
+        time.sleep(3)
+    print(movie_list_zh)
+    print(movie_list_value)
+    print(movie_list_url)
 
     listurl2 = "https://reelgood.com/tv/curated/trending-picks"
     page = requests.get(listurl2)
     soup = BeautifulSoup(page.content, "html.parser")
     list2 = soup.find_all("a", href=re.compile(r'/show/'))
-    show_list = []
+    show_list_en = []
     for link in list2:
-        show_list.append(link.text)
-    show_list = [i for i in show_list if i != '']
+        show_list_en.append(link.text)
+    show_list_en = [i for i in show_list_en if i != '']
+    print(show_list_en)
 
-    print(show_list)
+    show_list_en1 = []
+    for i in show_list_en:
+        show_list_en1.append(i.replace(' ', ''))
+    print(show_list_en1)
+
+    show_list_zh = []
+    show_list_zh1 = []
+    show_list_value = []
+    show_list_value1 = []
+    show_list_url = []
+    show_list_url1 = []
+
+    show_list_en1 = show_list_en1[:6]
+
+    for show in show_list_en1:
+        url = "https://search.keepfrds.workers.dev/?search=" + show
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 UBrowser/6.2.3964.2 Safari/537.36",
+        }
+        response = requests.get(url)
+        json_response = response.content.decode()
+        dict_json = json.loads(json_response)
+
+        for mk in dict_json["payload"]["items"]:
+            try:
+                list = mk["title"].split(' ', 1)
+                if u'\u4e00' <= list[0] <= u'\u9fa5':
+                    show_list_zh1.append(list[0])
+                    show_list_value1.append(str(mk["rating"]["value"]))
+                    show_list_url1.append(mk["url"])
+            except KeyError:
+                pass
+        try:
+            show_list_zh.append(show_list_zh1[0])
+            if show_list_value1[0] == "0":
+                show_list_value.append("N/A")
+            else:
+                show_list_value.append(show_list_value1[0])
+            show_list_url.append(show_list_url1[0])
+        except:
+            show_list_zh.append(show)
+            show_list_value.append("N/A")
+            show_list_url.append("")
+        show_list_zh1 = []
+        show_list_value1 = []
+        show_list_url1 = []
+        time.sleep(3)
+    print(show_list_zh)
+    print(show_list_value)
+    print(show_list_url)
 
     msg = bot.send_photo(chat_id=chat_id, photo=photo_rg, parse_mode='MARKDOWN',
                          caption=["#TrendingNow #Streaming\n" + "\n" +
                                   up + "*流媒体热度排行*（" + time.strftime("%m", time.localtime()) + "月" + time.strftime(
                              "%d", time.localtime()) + "日)" + "\n" + "\n" +
                                   movie1 + "*电影 Movies*\n" + "\n" +
-                                  one + " " + movie_list[0] + "\n" + "\n" +
-                                  two + " " + movie_list[1] + "\n" + "\n" +
-                                  thr + " " + movie_list[2] + "\n" + "\n" +
-                                  four + " " + movie_list[3] + "\n" + "\n" +
-                                  five + " " + movie_list[4] + "\n" + "\n" +
-                                  six + " " + movie_list[5] + "\n" + "\n" +
+                                  one + " [" + movie_list_zh[0] + "(" + movie_list_value[0] + ")](" + movie_list_url[
+                                      0] + ")\n" + "\n" +
+                                  two + " [" + movie_list_zh[1] + "(" + movie_list_value[1] + ")](" + movie_list_url[
+                                      1] + ")\n" + "\n" +
+                                  thr + " [" + movie_list_zh[2] + "(" + movie_list_value[2] + ")](" + movie_list_url[
+                                      2] + ")\n" + "\n" +
+                                  four + " [" + movie_list_zh[3] + "(" + movie_list_value[3] + ")](" + movie_list_url[
+                                      3] + ")\n" + "\n" +
+                                  five + " [" + movie_list_zh[4] + "(" + movie_list_value[4] + ")](" + movie_list_url[
+                                      4] + ")\n" + "\n" +
+                                  six + " [" + movie_list_zh[5] + "(" + movie_list_value[5] + ")](" + movie_list_url[
+                                      5] + ")\n" + "\n" +
                                   movie2 + " *剧集 TV Shows*\n" + "\n" +
-                                  one + " " + show_list[0] + "\n" + "\n" +
-                                  two + " " + show_list[1] + "\n" + "\n" +
-                                  thr + " " + show_list[2] + "\n" + "\n" +
-                                  four + " " + show_list[3] + "\n" + "\n" +
-                                  five + " " + show_list[4] + "\n" + "\n" +
-                                  six + " " + show_list[5] + "\n" + "\n" +
+                                  one + " [" + show_list_zh[0] + "(" + show_list_value[0] + ")](" + show_list_url[
+                                      0] + ")\n" + "\n" +
+                                  two + " [" + show_list_zh[1] + "(" + show_list_value[1] + ")](" + show_list_url[
+                                      1] + ")\n" + "\n" +
+                                  thr + " [" + show_list_zh[2] + "(" + show_list_value[2] + ")](" + show_list_url[
+                                      2] + ")\n" + "\n" +
+                                  four + " [" + show_list_zh[3] + "(" + show_list_value[3] + ")](" + show_list_url[
+                                      3] + ")\n" + "\n" +
+                                  five + " [" + show_list_zh[4] + "(" + show_list_value[4] + ")](" + show_list_url[
+                                      4] + ")\n" + "\n" +
+                                  six + " [" + show_list_zh[5] + "(" + show_list_value[5] + ")](" + show_list_url[
+                                      5] + ")\n" + "\n" +
                                   "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
     bot.send_message(message.chat.id, "流媒体热度排行已推送到Odyssey频道")
     bot.delete_message(chat_id, msg.message_id + 1)
