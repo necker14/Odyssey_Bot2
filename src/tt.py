@@ -264,7 +264,7 @@ def send_rglist(message):
         movie_list_zh1 = []
         movie_list_value1 = []
         movie_list_url1 = []
-        time.sleep(3)
+        time.sleep(5)
     print(movie_list_zh)
     print(movie_list_value)
     print(movie_list_url)
@@ -325,7 +325,7 @@ def send_rglist(message):
         show_list_zh1 = []
         show_list_value1 = []
         show_list_url1 = []
-        time.sleep(3)
+        time.sleep(5)
     print(show_list_zh)
     print(show_list_value)
     print(show_list_url)
@@ -335,30 +335,30 @@ def send_rglist(message):
                                   up + "*流媒体热度排行*（" + time.strftime("%m", time.localtime()) + "月" + time.strftime(
                              "%d", time.localtime()) + "日)" + "\n" + "\n" +
                                   movie1 + "*电影 Movies*\n" + "\n" +
-                                  one + " [" + movie_list_zh[0] + "(" + movie_list_value[0] + ")](" + movie_list_url[
+                                  one + " [" + movie_list_zh[0] + " (" + movie_list_value[0] + ")](" + movie_list_url[
                                       0] + ")\n" + "\n" +
-                                  two + " [" + movie_list_zh[1] + "(" + movie_list_value[1] + ")](" + movie_list_url[
+                                  two + " [" + movie_list_zh[1] + " (" + movie_list_value[1] + ")](" + movie_list_url[
                                       1] + ")\n" + "\n" +
-                                  thr + " [" + movie_list_zh[2] + "(" + movie_list_value[2] + ")](" + movie_list_url[
+                                  thr + " [" + movie_list_zh[2] + " (" + movie_list_value[2] + ")](" + movie_list_url[
                                       2] + ")\n" + "\n" +
-                                  four + " [" + movie_list_zh[3] + "(" + movie_list_value[3] + ")](" + movie_list_url[
+                                  four + " [" + movie_list_zh[3] + " (" + movie_list_value[3] + ")](" + movie_list_url[
                                       3] + ")\n" + "\n" +
-                                  five + " [" + movie_list_zh[4] + "(" + movie_list_value[4] + ")](" + movie_list_url[
+                                  five + " [" + movie_list_zh[4] + " (" + movie_list_value[4] + ")](" + movie_list_url[
                                       4] + ")\n" + "\n" +
-                                  six + " [" + movie_list_zh[5] + "(" + movie_list_value[5] + ")](" + movie_list_url[
+                                  six + " [" + movie_list_zh[5] + " (" + movie_list_value[5] + ")](" + movie_list_url[
                                       5] + ")\n" + "\n" +
                                   movie2 + " *剧集 TV Shows*\n" + "\n" +
-                                  one + " [" + show_list_zh[0] + "(" + show_list_value[0] + ")](" + show_list_url[
+                                  one + " [" + show_list_zh[0] + " (" + show_list_value[0] + ")](" + show_list_url[
                                       0] + ")\n" + "\n" +
-                                  two + " [" + show_list_zh[1] + "(" + show_list_value[1] + ")](" + show_list_url[
+                                  two + " [" + show_list_zh[1] + " (" + show_list_value[1] + ")](" + show_list_url[
                                       1] + ")\n" + "\n" +
-                                  thr + " [" + show_list_zh[2] + "(" + show_list_value[2] + ")](" + show_list_url[
+                                  thr + " [" + show_list_zh[2] + " (" + show_list_value[2] + ")](" + show_list_url[
                                       2] + ")\n" + "\n" +
-                                  four + " [" + show_list_zh[3] + "(" + show_list_value[3] + ")](" + show_list_url[
+                                  four + " [" + show_list_zh[3] + " (" + show_list_value[3] + ")](" + show_list_url[
                                       3] + ")\n" + "\n" +
-                                  five + " [" + show_list_zh[4] + "(" + show_list_value[4] + ")](" + show_list_url[
+                                  five + " [" + show_list_zh[4] + " (" + show_list_value[4] + ")](" + show_list_url[
                                       4] + ")\n" + "\n" +
-                                  six + " [" + show_list_zh[5] + "(" + show_list_value[5] + ")](" + show_list_url[
+                                  six + " [" + show_list_zh[5] + " (" + show_list_value[5] + ")](" + show_list_url[
                                       5] + ")\n" + "\n" +
                                   "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
     bot.send_message(message.chat.id, "流媒体热度排行已推送到Odyssey频道")
