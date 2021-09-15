@@ -4,8 +4,8 @@ import os
 import re
 from logging.handlers import TimedRotatingFileHandler
 
-TGBOT_TOKEN = "YOUR TOKEN"
-CHAT_ID = "YOUR CHAT ID"
+TGBOT_TOKEN = "1738025069:AAGUjgmw1MKjL5qJTSn1qyl4tbd_tSq3vxw"
+CHAT_ID = "-1001480724933"
 
 UserAgent = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',

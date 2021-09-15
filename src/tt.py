@@ -63,60 +63,99 @@ def send_photo1(message):
         wk_money_China.append(film.wk_money)
         all_money_China.append(film.all_money)
 
+    name_China_url = []
+    name_China_url1 = []
+    name_China_value = []
+    name_China_value1 = []
+    for name in name_China:
+        url = "https://search.keepfrds.workers.dev/?search=" + name
+        response = requests.get(url)
+        json_response = response.content.decode()
+        dict_json = json.loads(json_response)
+        for mk in dict_json["payload"]["items"]:
+            try:
+                name_China_value1.append(str(mk["rating"]["value"]))
+                name_China_url1.append(mk["url"])
+            except KeyError:
+                pass
+        try:
+            if name_China_value1[0] == "0":
+                name_China_value.append("N/A")
+            else:
+                name_China_value.append(name_China_value1[0])
+            name_China_url.append(name_China_url1[0])
+        except:
+            name_China_value.append("N/A")
+            name_China_url.append("")
+        name_China_value1 = []
+        name_China_url1 = []
+        time.sleep(8)
+
     for index in range(len(name_China)):
         name_China[index] = " " + name_China[index]
+
     msg = bot.send_photo(chat_id=chat_id, photo=photo_china, parse_mode='MARKDOWN',
                          caption=["#TopBoxOffice #Mainland #票房\n"
                                   "\n"
                                   + baomihua + " *内地票房周榜*（" + date_China1 + '月' + date_China2 + "日 | 人民币)\n"
                                                                                                 "\n"
-                                  + one + name_China[0] + "\n"
-                                                          "       " +
+                                  + one + "[" + name_China[0] + "](" + name_China_url[0] + ")" + " (" +
+                                  name_China_value[0] + ")\n"
+                                                        "       " +
                                   wk_money_China[0] + "万 / " + all_money_China[
                                       0] + "万\n "
                                            "\n"
-                                  + two + name_China[1] + "\n"
-                                                          "       " +
+                                  + two + "[" + name_China[1] + "](" + name_China_url[1] + ")" + " (" +
+                                  name_China_value[1] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       1] + "万 / " + all_money_China[1] + "万\n "
                                                                          "\n"
-                                  + thr + name_China[2] + "\n "
-                                                          "      " +
+                                  + thr + "[" + name_China[2] + "](" + name_China_url[2] + ")" + " (" +
+                                  name_China_value[2] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       2] + "万 / " + all_money_China[2] + "万\n "
                                                                          "\n"
-                                  + four + name_China[3] + "\n"
-                                                           "       " +
+                                  + four + "[" + name_China[3] + "](" + name_China_url[3] + ")" + " (" +
+                                  name_China_value[3] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       3] + "万 / " + all_money_China[3] + "万\n "
                                                                          "\n"
-                                  + five + name_China[4] + "\n"
-                                                           "       " +
+                                  + five + "[" + name_China[4] + "](" + name_China_url[4] + ")" + " (" +
+                                  name_China_value[4] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       4] + "万 / " + all_money_China[4] + "万\n "
                                                                          "\n"
-                                  + six + name_China[5] + "\n"
-                                                          "       " +
+                                  + six + "[" + name_China[5] + "](" + name_China_url[5] + ")" + " (" +
+                                  name_China_value[5] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       5] + "万 / " + all_money_China[5] + "万\n "
                                                                          "\n"
-                                  + seven + name_China[6] + "\n"
-                                                            "       " +
+                                  + seven + "[" + name_China[6] + "](" + name_China_url[6] + ")" + " (" +
+                                  name_China_value[6] + ")\n"
+                                                        "       " +
                                   wk_money_China[6] + "万 / " + all_money_China[
                                       6] + "万\n "
                                            "\n"
-                                  + eight + name_China[7] + "\n"
-                                                            "       " +
+                                  + eight + "[" + name_China[7] + "](" + name_China_url[7] + ")" + " (" +
+                                  name_China_value[7] + ")\n"
+                                                        "       " +
                                   wk_money_China[7] + "万 / " + all_money_China[
                                       7] + "万\n "
                                            "\n"
-                                  + nine + name_China[8] + "\n"
-                                                           "       " +
+                                  + nine + "[" + name_China[8] + "](" + name_China_url[8] + ")" + " (" +
+                                  name_China_value[8] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       8] + "万 / " + all_money_China[8] + "万\n "
                                                                          "\n"
-                                  + ten + name_China[9] + "\n"
-                                                          "       " +
+                                  + ten + "[" + name_China[9] + "](" + name_China_url[9] + ")" + " (" +
+                                  name_China_value[9] + ")\n"
+                                                        "       " +
                                   wk_money_China[
                                       9] + "万 / " + all_money_China[9] + "万\n "
                                                                          "\n"
@@ -151,6 +190,35 @@ def send_photo1(message):
         i = i[:-4]
         all_money_USA1.append(i)
 
+    name_USA_url = []
+    name_USA_url1 = []
+    name_USA_value = []
+    name_USA_value1 = []
+
+    for name in name_USA:
+        url = "https://search.keepfrds.workers.dev/?search=" + name
+        response = requests.get(url)
+        json_response = response.content.decode()
+        dict_json = json.loads(json_response)
+        for mk in dict_json["payload"]["items"]:
+            try:
+                name_USA_value1.append(str(mk["rating"]["value"]))
+                name_USA_url1.append(mk["url"])
+            except KeyError:
+                pass
+        try:
+            if name_USA_value1[0] == "0":
+                name_USA_value.append("N/A")
+            else:
+                name_USA_value.append(name_USA_value1[0])
+            name_USA_url.append(name_USA_url1[0])
+        except:
+            name_USA_value.append("N/A")
+            name_USA_url.append("")
+        name_USA_value1 = []
+        name_USA_url1 = []
+        time.sleep(8)
+
     for index in range(len(name_USA)):
         name_USA[index] = " " + name_USA[index]
 
@@ -159,46 +227,56 @@ def send_photo1(message):
                                   "\n"
                                   + baomihua + " *北美票房周榜*（" + date_USA1 + "月" + date_USA2 + "日 | 美元)\n"
                                                                                             "\n"
-                                  + one + name_USA[0] + "\n"
-                                                        "       " + wk_money_USA1[
+                                  + one + "[" + name_USA[0] + "](" + name_USA_url[0] + ")" + " (" + name_USA_value[
+                                      0] + ")\n"
+                                           "       " + wk_money_USA1[
                                       0] + "万 / " + all_money_USA1[0] + "万\n "
                                                                         "\n"
-                                  + two + name_USA[1] + "\n"
-                                                        "       " + wk_money_USA1[
+                                  + two + "[" + name_USA[1] + "](" + name_USA_url[1] + ")" + " (" + name_USA_value[
+                                      1] + ")\n"
+                                           "       " + wk_money_USA1[
                                       1] + "万 / " + all_money_USA1[1] + "万\n "
                                                                         "\n"
-                                  + thr + name_USA[2] + "\n "
-                                                        "      " + wk_money_USA1[
+                                  + thr + "[" + name_USA[2] + "](" + name_USA_url[2] + ")" + " (" + name_USA_value[
+                                      2] + ")\n"
+                                           "       " + wk_money_USA1[
                                       2] + "万 / " + all_money_USA1[2] + "万\n "
                                                                         "\n"
-                                  + four + name_USA[3] + "\n"
-                                                         "       " + wk_money_USA1[
+                                  + four + "[" + name_USA[3] + "](" + name_USA_url[3] + ")" + " (" + name_USA_value[
+                                      3] + ")\n"
+                                           "       " + wk_money_USA1[
                                       3] + "万 / " + all_money_USA1[3] + "万\n "
                                                                         "\n"
-                                  + five + name_USA[4] + "\n"
-                                                         "       " + wk_money_USA1[
+                                  + five + "[" + name_USA[4] + "](" + name_USA_url[4] + ")" + " (" + name_USA_value[
+                                      4] + ")\n"
+                                           "       " + wk_money_USA1[
                                       4] + "万 / " + all_money_USA1[4] + "万\n "
                                                                         "\n"
-                                  + six + name_USA[5] + "\n"
-                                                        "       " + wk_money_USA1[
+                                  + six + "[" + name_USA[5] + "](" + name_USA_url[5] + ")" + " (" + name_USA_value[
+                                      5] + ")\n"
+                                           "       " + wk_money_USA1[
                                       5] + "万 / " + all_money_USA1[5] + "万\n "
                                                                         "\n"
-                                  + seven + name_USA[6] + "\n"
-                                                          "       " +
+                                  + seven + "[" + name_USA[6] + "](" + name_USA_url[6] + ")" + " (" + name_USA_value[
+                                      6] + ")\n"
+                                           "       " +
                                   wk_money_USA1[6] + "万 / " + all_money_USA1[
                                       6] + "万\n "
                                            "\n"
-                                  + eight + name_USA[7] + "\n"
-                                                          "       " +
+                                  + eight + "[" + name_USA[7] + "](" + name_USA_url[7] + ")" + " (" + name_USA_value[
+                                      7] + ")\n"
+                                           "       " +
                                   wk_money_USA1[7] + "万 / " + all_money_USA1[
                                       7] + "万\n "
                                            "\n"
-                                  + nine + name_USA[8] + "\n"
-                                                         "       " + wk_money_USA1[
+                                  + nine + "[" + name_USA[8] + "](" + name_USA_url[8] + ")" + " (" + name_USA_value[
+                                      8] + ")\n"
+                                           "       " + wk_money_USA1[
                                       8] + "万 / " + all_money_USA1[8] + "万\n "
                                                                         "\n"
-                                  + ten + name_USA[9] + "\n"
-                                                        "       " + wk_money_USA1[
+                                  + ten + "[" + name_USA[9] + "](" + name_USA_url[9] + ")" + " (" + name_USA_value[
+                                      9] + ")\n"
+                                           "       " + wk_money_USA1[
                                       9] + "万 / " + all_money_USA1[9] + "万\n "
                                                                         "\n"
                                                                         "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
@@ -264,7 +342,7 @@ def send_rglist(message):
         movie_list_zh1 = []
         movie_list_value1 = []
         movie_list_url1 = []
-        time.sleep(5)
+        time.sleep(10)
     print(movie_list_zh)
     print(movie_list_value)
     print(movie_list_url)
@@ -325,7 +403,7 @@ def send_rglist(message):
         show_list_zh1 = []
         show_list_value1 = []
         show_list_url1 = []
-        time.sleep(5)
+        time.sleep(10)
     print(show_list_zh)
     print(show_list_value)
     print(show_list_url)
@@ -335,31 +413,31 @@ def send_rglist(message):
                                   up + "*流媒体热度排行*（" + time.strftime("%m", time.localtime()) + "月" + time.strftime(
                              "%d", time.localtime()) + "日)" + "\n" + "\n" +
                                   movie1 + "*电影 Movies*\n" + "\n" +
-                                  one + " [" + movie_list_zh[0] + " (" + movie_list_value[0] + ")](" + movie_list_url[
-                                      0] + ")\n" + "\n" +
-                                  two + " [" + movie_list_zh[1] + " (" + movie_list_value[1] + ")](" + movie_list_url[
-                                      1] + ")\n" + "\n" +
-                                  thr + " [" + movie_list_zh[2] + " (" + movie_list_value[2] + ")](" + movie_list_url[
-                                      2] + ")\n" + "\n" +
-                                  four + " [" + movie_list_zh[3] + " (" + movie_list_value[3] + ")](" + movie_list_url[
-                                      3] + ")\n" + "\n" +
-                                  five + " [" + movie_list_zh[4] + " (" + movie_list_value[4] + ")](" + movie_list_url[
-                                      4] + ")\n" + "\n" +
-                                  six + " [" + movie_list_zh[5] + " (" + movie_list_value[5] + ")](" + movie_list_url[
-                                      5] + ")\n" + "\n" +
+                                  one + " [" + movie_list_zh[0] + "](" + movie_list_url[
+                                      0] + ")" + " (" + movie_list_value[0] + ")\n" + "\n" +
+                                  two + " [" + movie_list_zh[1] + "](" + movie_list_url[
+                                      1] + ")" + " (" + movie_list_value[1] + ")\n" + "\n" +
+                                  thr + " [" + movie_list_zh[2] + "](" + movie_list_url[
+                                      2] + ")" + " (" + movie_list_value[2] + ")\n" + "\n" +
+                                  four + " [" + movie_list_zh[3] + "](" + movie_list_url[
+                                      3] + ")" + " (" + movie_list_value[3] + ")\n" + "\n" +
+                                  five + " [" + movie_list_zh[4] + "](" + movie_list_url[
+                                      4] + ")" + " (" + movie_list_value[4] + ")\n" + "\n" +
+                                  six + " [" + movie_list_zh[5] + "](" + movie_list_url[
+                                      5] + ")" + " (" + movie_list_value[5] + ")\n" + "\n" +
                                   movie2 + " *剧集 TV Shows*\n" + "\n" +
-                                  one + " [" + show_list_zh[0] + " (" + show_list_value[0] + ")](" + show_list_url[
-                                      0] + ")\n" + "\n" +
-                                  two + " [" + show_list_zh[1] + " (" + show_list_value[1] + ")](" + show_list_url[
-                                      1] + ")\n" + "\n" +
-                                  thr + " [" + show_list_zh[2] + " (" + show_list_value[2] + ")](" + show_list_url[
-                                      2] + ")\n" + "\n" +
-                                  four + " [" + show_list_zh[3] + " (" + show_list_value[3] + ")](" + show_list_url[
-                                      3] + ")\n" + "\n" +
-                                  five + " [" + show_list_zh[4] + " (" + show_list_value[4] + ")](" + show_list_url[
-                                      4] + ")\n" + "\n" +
-                                  six + " [" + show_list_zh[5] + " (" + show_list_value[5] + ")](" + show_list_url[
-                                      5] + ")\n" + "\n" +
+                                  one + " [" + show_list_zh[0] + "](" + show_list_url[
+                                      0] + ")" + " (" + show_list_value[0] + ")\n" + "\n" +
+                                  two + " [" + show_list_zh[1] + "](" + show_list_url[
+                                      1] + ")" + " (" + show_list_value[1] + ")\n" + "\n" +
+                                  thr + " [" + show_list_zh[2] + "](" + show_list_url[
+                                      2] + ")" + " (" + show_list_value[2] + ")\n" + "\n" +
+                                  four + " [" + show_list_zh[3] + "](" + show_list_url[
+                                      3] + ")" + " (" + show_list_value[3] + ")\n" + "\n" +
+                                  five + " [" + show_list_zh[4] + "](" + show_list_url[
+                                      4] + ")" + " (" + show_list_value[4] + ")\n" + "\n" +
+                                  six + " [" + show_list_zh[5] + "](" + show_list_url[
+                                      5] + ")" + " (" + show_list_value[5] + ")\n" + "\n" +
                                   "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
     bot.send_message(message.chat.id, "流媒体热度排行已推送到Odyssey频道")
     bot.delete_message(chat_id, msg.message_id + 1)
