@@ -89,7 +89,7 @@ def send_photo1(message):
             name_China_url.append("")
         name_China_value1 = []
         name_China_url1 = []
-        time.sleep(8)
+        time.sleep(20)
 
     for index in range(len(name_China)):
         name_China[index] = " " + name_China[index]
@@ -217,7 +217,7 @@ def send_photo1(message):
             name_USA_url.append("")
         name_USA_value1 = []
         name_USA_url1 = []
-        time.sleep(8)
+        time.sleep(20)
 
     for index in range(len(name_USA)):
         name_USA[index] = " " + name_USA[index]
@@ -294,6 +294,12 @@ def send_rglist(message):
     for link in list1:
         movie_list_en.append(link.text)
     movie_list_en = [i for i in movie_list_en if i != '']
+
+    movie_list_en1 = []
+    for movie in movie_list_en:
+        x = movie.split("SeeSeen It")
+        movie_list_en1.append(x[-1])
+    movie_list_en = movie_list_en1
     print(movie_list_en)
 
     movie_list_en1 = []
@@ -318,6 +324,7 @@ def send_rglist(message):
         response = requests.get(url)
         json_response = response.content.decode()
         dict_json = json.loads(json_response)
+        print(type(dict_json))
 
         for mk in dict_json["payload"]["items"]:
             try:
@@ -342,7 +349,7 @@ def send_rglist(message):
         movie_list_zh1 = []
         movie_list_value1 = []
         movie_list_url1 = []
-        time.sleep(10)
+        time.sleep(20)
     print(movie_list_zh)
     print(movie_list_value)
     print(movie_list_url)
@@ -355,6 +362,12 @@ def send_rglist(message):
     for link in list2:
         show_list_en.append(link.text)
     show_list_en = [i for i in show_list_en if i != '']
+
+    show_list_en1 = []
+    for show in show_list_en:
+        x = show.split("TVTrack Series")
+        show_list_en1.append(x[-1])
+    show_list_en = show_list_en1
     print(show_list_en)
 
     show_list_en1 = []
@@ -379,6 +392,7 @@ def send_rglist(message):
         response = requests.get(url)
         json_response = response.content.decode()
         dict_json = json.loads(json_response)
+        print(type(dict_json))
 
         for mk in dict_json["payload"]["items"]:
             try:
@@ -403,7 +417,7 @@ def send_rglist(message):
         show_list_zh1 = []
         show_list_value1 = []
         show_list_url1 = []
-        time.sleep(10)
+        time.sleep(20)
     print(show_list_zh)
     print(show_list_value)
     print(show_list_url)
