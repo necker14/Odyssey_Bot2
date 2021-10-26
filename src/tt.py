@@ -305,7 +305,6 @@ def send_rglist(message):
     movie_list_en1 = []
     for i in movie_list_en:
         movie_list_en1.append(i.replace(' ', ''))
-    print(movie_list_en1)
 
     movie_list_zh = []
     movie_list_zh1 = []
@@ -315,6 +314,15 @@ def send_rglist(message):
     movie_list_url1 = []
 
     movie_list_en1 = movie_list_en1[:6]
+
+    movie_list_en2 = []
+
+    for movie in movie_list_en1:
+        movie = movie.replace('(', '%20')
+        movie = movie.replace(')', '')
+        movie_list_en2.append(movie)
+    movie_list_en1 = movie_list_en2
+    print(movie_list_en1)
 
     for movie in movie_list_en1:
         url = "https://search.keepfrds.workers.dev/?search=" + movie
@@ -326,22 +334,27 @@ def send_rglist(message):
         dict_json = json.loads(json_response)
         print(type(dict_json))
 
-        for mk in dict_json["payload"]["items"]:
-            try:
-                list = mk["title"].split(' ', 1)
-                if u'\u4e00' <= list[0] <= u'\u9fa5':
-                    movie_list_zh1.append(list[0])
-                    movie_list_value1.append(str(mk["rating"]["value"]))
-                    movie_list_url1.append(mk["url"])
-            except KeyError:
-                pass
         try:
-            movie_list_zh.append(movie_list_zh1[0])
-            if movie_list_value1[0] == "0":
+            for mk in dict_json["payload"]["items"]:
+                try:
+                    list = mk["title"].split(' ', 1)
+                    if u'\u4e00' <= list[0] <= u'\u9fa5':
+                        movie_list_zh1.append(list[0])
+                        movie_list_value1.append(str(mk["rating"]["value"]))
+                        movie_list_url1.append(mk["url"])
+                except KeyError:
+                    pass
+            try:
+                movie_list_zh.append(movie_list_zh1[0])
+                if movie_list_value1[0] == "0":
+                    movie_list_value.append("N/A")
+                else:
+                    movie_list_value.append(movie_list_value1[0])
+                movie_list_url.append(movie_list_url1[0])
+            except:
+                movie_list_zh.append(movie)
                 movie_list_value.append("N/A")
-            else:
-                movie_list_value.append(movie_list_value1[0])
-            movie_list_url.append(movie_list_url1[0])
+                movie_list_url.append("")
         except:
             movie_list_zh.append(movie)
             movie_list_value.append("N/A")
@@ -373,7 +386,6 @@ def send_rglist(message):
     show_list_en1 = []
     for i in show_list_en:
         show_list_en1.append(i.replace(' ', ''))
-    print(show_list_en1)
 
     show_list_zh = []
     show_list_zh1 = []
@@ -383,6 +395,14 @@ def send_rglist(message):
     show_list_url1 = []
 
     show_list_en1 = show_list_en1[:6]
+
+    show_list_en2 = []
+    for show in show_list_en1:
+        show = show.replace('(', '%20')
+        show = show.replace(')', '')
+        show_list_en2.append(show)
+    show_list_en1 = show_list_en2
+    print(show_list_en1)
 
     for show in show_list_en1:
         url = "https://search.keepfrds.workers.dev/?search=" + show
@@ -394,22 +414,27 @@ def send_rglist(message):
         dict_json = json.loads(json_response)
         print(type(dict_json))
 
-        for mk in dict_json["payload"]["items"]:
-            try:
-                list = mk["title"].split(' ', 1)
-                if u'\u4e00' <= list[0] <= u'\u9fa5':
-                    show_list_zh1.append(list[0])
-                    show_list_value1.append(str(mk["rating"]["value"]))
-                    show_list_url1.append(mk["url"])
-            except KeyError:
-                pass
         try:
-            show_list_zh.append(show_list_zh1[0])
-            if show_list_value1[0] == "0":
+            for mk in dict_json["payload"]["items"]:
+                try:
+                    list = mk["title"].split(' ', 1)
+                    if u'\u4e00' <= list[0] <= u'\u9fa5':
+                        show_list_zh1.append(list[0])
+                        show_list_value1.append(str(mk["rating"]["value"]))
+                        show_list_url1.append(mk["url"])
+                except KeyError:
+                    pass
+            try:
+                show_list_zh.append(show_list_zh1[0])
+                if show_list_value1[0] == "0":
+                    show_list_value.append("N/A")
+                else:
+                    show_list_value.append(show_list_value1[0])
+                show_list_url.append(show_list_url1[0])
+            except:
+                show_list_zh.append(show)
                 show_list_value.append("N/A")
-            else:
-                show_list_value.append(show_list_value1[0])
-            show_list_url.append(show_list_url1[0])
+                show_list_url.append("")
         except:
             show_list_zh.append(show)
             show_list_value.append("N/A")
@@ -418,6 +443,7 @@ def send_rglist(message):
         show_list_value1 = []
         show_list_url1 = []
         time.sleep(20)
+
     print(show_list_zh)
     print(show_list_value)
     print(show_list_url)
