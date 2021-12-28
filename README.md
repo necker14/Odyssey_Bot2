@@ -19,6 +19,10 @@
 ```TGBOT_TOKEN = 'YOUR TOKEN'```
 ```CHAT_ID = 'YOUR CHAT_ID'```
 
+5.打开tt.py文件进行配置，修改518行的IMDB_API_KEY为自己的API_KEY:
+
+```URL = "https://imdb-api.com/en/API/BoxOffice/Your_API_KEY"```
+
 5.运行票房机器人：
 
 ```nohup /usr/bin/python3 /root/Odyssey_Bot2/src/tt.py &```

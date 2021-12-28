@@ -3,11 +3,11 @@ import math
 import os
 import re
 import time
-
+import datetime
+from datetime import timedelta
 import telebot
 import emoji
 from bs4 import BeautifulSoup
-
 import config
 import requests
 from lxml import etree
@@ -501,47 +501,13 @@ def send_rglist(message):
     bot.send_message(message.chat.id, "流媒体热度排行已推送到Odyssey频道")
     bot.delete_message(chat_id, msg.message_id + 1)
 
+
 @bot.message_handler(commands=['list_USA_1'])
 def send_USA_movie_list(message):
-    wk = str((math.trunc(time.localtime()[7] / 7 + 1)) - 1)
-    year = str(time.localtime()[0])
-
-    URL = "https://www.boxofficemojo.com/weekend/" + year + "W" + wk + "/?ref_=bo_hm_rw"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36 Edg/96.0.1054.34",
-    }
-    page = requests.get(URL, headers=headers)
-    page.encoding = 'utf-8'
-    soup = BeautifulSoup(page.content, "html.parser")
-    list1 = soup.find_all("a", href=re.compile(r'/release/'))
     movie_name_list = []
-    for list2 in list1:
-        movie_name_list.append(list2.text)
-    movie_boxsum_list = []
-    list3 = soup.find_all("td", attrs={"class": "a-text-right mojo-field-type-money mojo-estimatable"})
-    for list4 in list3:
-        movie_boxsum_list.append(list4.text)
-    movie_boxsum_list1 = []
-    for s in movie_boxsum_list:
-        s = s.replace('$', '')
-        s = s.replace(',', '')
-        movie_boxsum_list1.append(s)
-    movie_boxsum_list_gross = movie_boxsum_list1[::3]
-    movie_boxsum_list_total_gross = movie_boxsum_list1[2::3]
-    movie_boxsum_list_gross = movie_boxsum_list_gross[0:10:]
-    movie_boxsum_list_total_gross = movie_boxsum_list_total_gross[0:10]
-    movie_name_list = movie_name_list[0:10:]
-
-    wk_money_USA1 = []
-    all_money_USA1 = []
-    for i in movie_boxsum_list_gross:
-        i = i[:-4]
-        wk_money_USA1.append(i)
-
-    for i in movie_boxsum_list_total_gross:
-        i = i[:-4]
-        all_money_USA1.append(i)
-
+    wk_money_USA = []
+    all_money_USA = []
+    movie_list_ID = []
     movie_list_zh = []
     movie_list_zh1 = []
     movie_list_value = []
@@ -549,117 +515,116 @@ def send_USA_movie_list(message):
     movie_list_url = []
     movie_list_url1 = []
 
-    for movie in movie_name_list:
-        try:
-            url = "https://search.keepfrds.workers.dev/?search=" + movie
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 UBrowser/6.2.3964.2 Safari/537.36",
-            }
+    URL = "https://imdb-api.com/en/API/BoxOffice/Your_API_KEY"
+    response = requests.get(URL)
+    json_response = response.content.decode()
+    dict_json = json.loads(json_response)
+    for mk in dict_json["items"]:
+        movie_list_ID.append(mk["id"])
+        movie_name_list.append(mk["title"])
+        wk_money_USA.append(mk["weekend"].replace('$', '').replace("M", "").replace(".", "")+"0")
+        all_money_USA.append(mk["gross"].replace('$', '').replace("M", "").replace(".", "")+"0")
+
+    for i, em in enumerate(movie_list_ID):
+        if em == '':
+            movie_list_zh.append(movie_name_list[i])
+            movie_list_value.append("N/A")
+            movie_list_url.append("")
+        else:
+            url = "https://search.keepfrds.workers.dev/?search=" + em
             response = requests.get(url)
             json_response = response.content.decode()
-            dict_json = json.loads(json_response)
-            print(type(dict_json))
-        except:
-            movie_list_zh.append(movie)
-            movie_list_value.append("N/A")
-            movie_list_url.append("")
-            continue
+            dict_json1 = json.loads(json_response)
 
-        try:
-            for mk in dict_json["payload"]["items"]:
-                try:
-                    list = mk["title"].split(' ', 1)
-                    if u'\u4e00' <= list[0] <= u'\u9fa5':
-                        movie_list_zh1.append(list[0])
-                        movie_list_value1.append(str(mk["rating"]["value"]))
-                        movie_list_url1.append(mk["url"])
-                except KeyError:
-                    pass
-            try:
-                movie_list_zh.append(movie_list_zh1[0])
-                if movie_list_value1[0] == "0":
+            for mk in dict_json1["payload"]["items"]:
+                movie_list_zh1.append(mk["title"].split(' ', 1))
+                movie_list_url1.append(mk["url"])
+                movie_list_value1.append(mk["rating"]["value"])
+                movie_list_zh.append((movie_list_zh1[0])[0])
+                movie_list_url.append(movie_list_url1[0])
+                if movie_list_value1[0] == 0:
                     movie_list_value.append("N/A")
                 else:
-                    movie_list_value.append(movie_list_value1[0])
-                movie_list_url.append(movie_list_url1[0])
-            except:
-                movie_list_zh.append(movie)
-                movie_list_value.append("N/A")
-                movie_list_url.append("")
-                continue
-        except:
-            movie_list_zh.append(movie)
-            movie_list_value.append("N/A")
-            movie_list_url.append("")
-            continue
-        movie_list_zh1 = []
-        movie_list_value1 = []
-        movie_list_url1 = []
-        time.sleep(20)
+                    movie_list_value.append((str)(movie_list_value1[0]))
+                movie_list_zh1 = []
+                movie_list_url1 = []
+                movie_list_value1 = []
+            time.sleep(10)
+    print(movie_list_ID)
+    print(movie_name_list)
+    print(all_money_USA)
+    print(wk_money_USA)
+    print(movie_list_zh)
+    print(movie_list_url)
+    print(movie_list_value)
 
-        name_USA = movie_list_zh
-        name_USA_url = movie_list_url
-        name_USA_value = movie_list_value
+    name_USA = movie_list_zh
+    name_USA_url = movie_list_url
+    name_USA_value = movie_list_value
 
     for index in range(len(name_USA)):
         name_USA[index] = " " + name_USA[index]
 
+    last_week_end = datetime.datetime.now() - timedelta(days=datetime.datetime.now().weekday() + 1)
+    last_week_end = last_week_end.__str__().split(' ', 1)[0].split('-')
+
     msg = bot.send_photo(chat_id=chat_id, photo=photo_usa, parse_mode='MARKDOWN',
                          caption=["#TopBoxOffice #NorthAmerica #票房\n"
                                   "\n"
-                                  + baomihua + " *北美票房周榜*（" + year + "年" + wk + "周 | 美元)\n"
-                                                                                            "\n"
+                                  + baomihua + " *北美票房周榜*（" + last_week_end[0] + "年" + last_week_end[1] + "月" +
+                                  last_week_end[2] + "日 | 美元)\n"
+                                                     "\n"
                                   + one + "[" + name_USA[0] + "](" + name_USA_url[0] + ")" + " (" + name_USA_value[
                                       0] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      0] + "万 / " + all_money_USA1[0] + "万\n "
+                                           "       " + wk_money_USA[
+                                      0] + "万 / " + all_money_USA[0] + "万\n "
                                                                         "\n"
                                   + two + "[" + name_USA[1] + "](" + name_USA_url[1] + ")" + " (" + name_USA_value[
                                       1] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      1] + "万 / " + all_money_USA1[1] + "万\n "
+                                           "       " + wk_money_USA[
+                                      1] + "万 / " + all_money_USA[1] + "万\n "
                                                                         "\n"
                                   + thr + "[" + name_USA[2] + "](" + name_USA_url[2] + ")" + " (" + name_USA_value[
                                       2] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      2] + "万 / " + all_money_USA1[2] + "万\n "
+                                           "       " + wk_money_USA[
+                                      2] + "万 / " + all_money_USA[2] + "万\n "
                                                                         "\n"
                                   + four + "[" + name_USA[3] + "](" + name_USA_url[3] + ")" + " (" + name_USA_value[
                                       3] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      3] + "万 / " + all_money_USA1[3] + "万\n "
+                                           "       " + wk_money_USA[
+                                      3] + "万 / " + all_money_USA[3] + "万\n "
                                                                         "\n"
                                   + five + "[" + name_USA[4] + "](" + name_USA_url[4] + ")" + " (" + name_USA_value[
                                       4] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      4] + "万 / " + all_money_USA1[4] + "万\n "
+                                           "       " + wk_money_USA[
+                                      4] + "万 / " + all_money_USA[4] + "万\n "
                                                                         "\n"
                                   + six + "[" + name_USA[5] + "](" + name_USA_url[5] + ")" + " (" + name_USA_value[
                                       5] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      5] + "万 / " + all_money_USA1[5] + "万\n "
+                                           "       " + wk_money_USA[
+                                      5] + "万 / " + all_money_USA[5] + "万\n "
                                                                         "\n"
                                   + seven + "[" + name_USA[6] + "](" + name_USA_url[6] + ")" + " (" + name_USA_value[
                                       6] + ")\n"
                                            "       " +
-                                  wk_money_USA1[6] + "万 / " + all_money_USA1[
+                                  wk_money_USA[6] + "万 / " + all_money_USA[
                                       6] + "万\n "
                                            "\n"
                                   + eight + "[" + name_USA[7] + "](" + name_USA_url[7] + ")" + " (" + name_USA_value[
                                       7] + ")\n"
                                            "       " +
-                                  wk_money_USA1[7] + "万 / " + all_money_USA1[
+                                  wk_money_USA[7] + "万 / " + all_money_USA[
                                       7] + "万\n "
                                            "\n"
                                   + nine + "[" + name_USA[8] + "](" + name_USA_url[8] + ")" + " (" + name_USA_value[
                                       8] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      8] + "万 / " + all_money_USA1[8] + "万\n "
+                                           "       " + wk_money_USA[
+                                      8] + "万 / " + all_money_USA[8] + "万\n "
                                                                         "\n"
                                   + ten + "[" + name_USA[9] + "](" + name_USA_url[9] + ")" + " (" + name_USA_value[
                                       9] + ")\n"
-                                           "       " + wk_money_USA1[
-                                      9] + "万 / " + all_money_USA1[9] + "万\n "
+                                           "       " + wk_money_USA[
+                                      9] + "万 / " + all_money_USA[9] + "万\n "
                                                                         "\n"
                                                                         "*Channel:* [@Odyssey+](https://t.me/odysseyplus)"])
     bot.send_message(message.chat.id, "美国电影票房榜单已推送到Odyssey频道")
